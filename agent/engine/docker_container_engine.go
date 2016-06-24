@@ -313,6 +313,9 @@ func (dg *dockerGoClient) getAuthdata(image string, authData *api.RegistryAuthen
 func (dg *dockerGoClient) CreateContainer(config *docker.Config, hostConfig *docker.HostConfig, name string) DockerContainerMetadata {
 	timeout := ttime.After(createContainerTimeout)
 
+	// Centricient - temp hack to for net=host
+	hostConfig.NetworkMode = "host"
+
 	ctx, cancelFunc := context.WithCancel(context.TODO()) // Could pass one through from engine
 	response := make(chan DockerContainerMetadata, 1)
 	go func() { response <- dg.createContainer(ctx, config, hostConfig, name) }()
